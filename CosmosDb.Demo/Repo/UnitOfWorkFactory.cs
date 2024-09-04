@@ -1,15 +1,17 @@
+using Microsoft.Azure.Cosmos;
+
 namespace CosmosDb.Demo.Repo
 {
 	public interface IUnitOfWorkFactory
 	{
-		IUnitOfWork GetUnitOfWork(string? region);
+		IUnitOfWork GetUnitOfWork(ConsistencyLevel consistencyLevel, string? region);
 	}
 
 	public class UnitOfWorkFactory : IUnitOfWorkFactory
 	{
-		public IUnitOfWork GetUnitOfWork(string? region)
+		public IUnitOfWork GetUnitOfWork(ConsistencyLevel consistencyLevel, string? region)
 		{
-			return new UnitOfWork(region);
+			return new UnitOfWork(consistencyLevel, region);
 		}
 	}
 }

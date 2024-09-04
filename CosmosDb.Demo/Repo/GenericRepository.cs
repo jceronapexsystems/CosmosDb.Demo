@@ -2,9 +2,11 @@ using Microsoft.Azure.Cosmos;
 
 namespace CosmosDb.Demo.Repo
 {
-	public class GenericRepository<T>(IUnitOfWorkFactory unitOfWorkFactory) : IGenericRepository<T> where T : BaseEntity, new()
+	public class GenericRepository<T>(IUnitOfWorkFactory unitOfWorkFactory, ConsistencyLevel consistencyLevel) 
+    : IGenericRepository<T> where T : BaseEntity, new()
 	{
 		private readonly IUnitOfWorkFactory _unitOfWorkFactory = unitOfWorkFactory;
+        private readonly ConsistencyLevel _consistencyLevel = consistencyLevel;
 
         public async Task<ItemResponse<T>> Create(T entity)
 		{
@@ -14,7 +16,7 @@ namespace CosmosDb.Demo.Repo
 				throw new ArgumentException("Entity, region and consistency level are required");
 			}
 
-			using var _unitOfWork = _unitOfWorkFactory.GetUnitOfWork(entity.Region);
+			using var _unitOfWork = _unitOfWorkFactory.GetUnitOfWork(_consistencyLevel, entity.Region);
 
 			// create an item
 			entity.Id = Guid.NewGuid().ToString();
@@ -33,7 +35,7 @@ namespace CosmosDb.Demo.Repo
 
 		public async Task<WeatherForecast> Delete(string partitionKey, string id)
 		{
-			using var _unitOfWork = _unitOfWorkFactory.GetUnitOfWork(partitionKey);
+			using var _unitOfWork = _unitOfWorkFactory.GetUnitOfWork(_consistencyLevel, partitionKey);
 
 			// delete the item
 			var partitionKey1 = new PartitionKey(partitionKey);
@@ -44,7 +46,7 @@ namespace CosmosDb.Demo.Repo
 
 		public async Task<List<WeatherForecast>> Get(string? partitionKey, string? id, int page, int pageSize)
 		{
-			using var _unitOfWork = _unitOfWorkFactory.GetUnitOfWork(partitionKey);
+			using var _unitOfWork = _unitOfWorkFactory.GetUnitOfWork(_consistencyLevel, partitionKey);
 
 			// calculate the offset based on the page and page size
 			int offset = (page - 1) * pageSize;
@@ -70,7 +72,7 @@ namespace CosmosDb.Demo.Repo
 
 		public async Task<T> Update(string partitionKey, string id, T entity)
 		{
-			using var _unitOfWork = _unitOfWorkFactory.GetUnitOfWork(partitionKey);
+			using var _unitOfWork = _unitOfWorkFactory.GetUnitOfWork(_consistencyLevel, partitionKey);
 
 			// update the item
 			var partitionKey1 = new PartitionKey(partitionKey);

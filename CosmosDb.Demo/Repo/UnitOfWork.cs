@@ -17,12 +17,12 @@ namespace CosmosDb.Demo.Repo
 
 		private CosmosClient _client;
 
-		public UnitOfWork(string? region = Regions.SouthCentralUS)
+		public UnitOfWork(ConsistencyLevel consistencyLevel, string? region = Regions.SouthCentralUS)
 		{
 			var cosmosClientOptions = new CosmosClientOptions
 			{
 				ApplicationRegion = region,
-				ConsistencyLevel = ConsistencyLevel.Session,
+				ConsistencyLevel = consistencyLevel,
 			};
 
 			// create a connection to azure cosmos db
@@ -41,9 +41,9 @@ namespace CosmosDb.Demo.Repo
 			GC.SuppressFinalize(this);
 		}
 
-		public IUnitOfWork GetUnitOfWork(string region)
+		public IUnitOfWork GetUnitOfWork(ConsistencyLevel consistencyLevel, string region)
 		{
-			return new UnitOfWork(region);
+			return new UnitOfWork(consistencyLevel, region);
 		}
 	}
 }
