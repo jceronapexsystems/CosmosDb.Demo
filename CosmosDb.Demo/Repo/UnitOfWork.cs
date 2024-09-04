@@ -16,6 +16,8 @@ namespace CosmosDb.Demo.Repo
 
 		private CosmosClient _client;
 
+		private string TypeName => typeof(T).Name;
+
 		public UnitOfWork(ConsistencyLevel consistencyLevel, string connectionString, string? region)
 		{
 			var cosmosClientOptions = new CosmosClientOptions
@@ -28,10 +30,10 @@ namespace CosmosDb.Demo.Repo
 			_client = new CosmosClient(connectionString, cosmosClientOptions);
 
 			// create a database
-			var database = _client.CreateDatabaseIfNotExistsAsync("WeatherForecast").Result;
+			var database = _client.CreateDatabaseIfNotExistsAsync(TypeName).Result;
 
 			// create a container
-			_container = database.Database.CreateContainerIfNotExistsAsync("WeatherForecast", $"/{nameof(WeatherForecast.Region)}").Result;
+			_container = database.Database.CreateContainerIfNotExistsAsync(TypeName, $"/{nameof(BaseEntity.Region)}").Result;
 		}
 
 		public void Dispose()
