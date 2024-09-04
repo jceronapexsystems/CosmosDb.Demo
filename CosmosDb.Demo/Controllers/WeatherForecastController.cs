@@ -48,8 +48,8 @@ namespace CosmosDb.Demo.Controllers
 			return Ok(result);
 		}
 
-		[HttpDelete("{region}/{id}")]
-		public async Task<IActionResult> Delete([FromRoute] string region, [FromRoute] string id)
+		[HttpDelete]
+		public async Task<IActionResult> Delete([FromQuery] string region, [FromQuery] string id)
 		{
 			var result = await _weatherForecastRepository.Delete(region, id);
 
