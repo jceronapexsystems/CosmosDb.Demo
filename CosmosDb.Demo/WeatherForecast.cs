@@ -1,3 +1,4 @@
+using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
 
 namespace CosmosDb.Demo
@@ -27,5 +28,7 @@ namespace CosmosDb.Demo
 		public string Id { get; set; } = string.Empty;
 
 		public string Region { get; set; } = string.Empty;
+
+		public ConsistencyLevel? ConsistencyLevel { get; set; }
     }
 }
