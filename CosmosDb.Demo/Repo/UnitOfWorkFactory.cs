@@ -4,14 +4,16 @@ namespace CosmosDb.Demo.Repo
 {
 	public interface IUnitOfWorkFactory
 	{
-		IUnitOfWork GetUnitOfWork(ConsistencyLevel consistencyLevel, string? region);
+		IUnitOfWork<T> GetUnitOfWork<T>(ConsistencyLevel consistencyLevel, string connectionString, string? region)
+			where T : BaseEntity;
 	}
 
 	public class UnitOfWorkFactory : IUnitOfWorkFactory
 	{
-		public IUnitOfWork GetUnitOfWork(ConsistencyLevel consistencyLevel, string? region)
+		public IUnitOfWork<T> GetUnitOfWork<T>(ConsistencyLevel consistencyLevel, string connectionString, string? region)
+			where T : BaseEntity
 		{
-			return new UnitOfWork(consistencyLevel, region);
+			return new UnitOfWork<T>(consistencyLevel, connectionString, region);
 		}
 	}
 }

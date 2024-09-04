@@ -8,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>();
-builder.Services.AddScoped<IGenericRepository<WeatherForecast>, GenericRepository<WeatherForecast>>();
+builder.Services.AddScoped<UserRepository, UserRepository>();
+builder.Services.AddScoped<WeatherForecastRepository, WeatherForecastRepository>();
 
 var app = builder.Build();
 

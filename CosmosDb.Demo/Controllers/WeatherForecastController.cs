@@ -8,11 +8,11 @@ namespace CosmosDb.Demo.Controllers
 	public class WeatherForecastController : ControllerBase
 	{
 		private readonly ILogger<WeatherForecastController> _logger;
-		private readonly IGenericRepository<WeatherForecast> _weatherForecastRepository;
+        private readonly WeatherForecastRepository _weatherForecastRepository;
 
-		public WeatherForecastController(
+        public WeatherForecastController(
 			ILogger<WeatherForecastController> logger,
-			IGenericRepository<WeatherForecast> weatherForecastRepository
+			WeatherForecastRepository weatherForecastRepository
 			)
 		{
 			_logger = logger;

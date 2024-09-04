@@ -2,14 +2,13 @@ using Microsoft.Azure.Cosmos;
 
 namespace CosmosDb.Demo.Repo
 {
-	public interface IUnitOfWork : IDisposable
+	public interface IUnitOfWork<T> : IDisposable where T : BaseEntity
 	{
 		public ContainerResponse Context { get; }
 	}
 	
-	public class UnitOfWork : IUnitOfWork, IDisposable
+	public class UnitOfWork<T> : IUnitOfWork<T>, IDisposable where T : BaseEntity
 	{
-		private const string ConnectionString = "AccountEndpoint=https://az-204-cosmosdb-demo-account2.documents.azure.com:443/;AccountKey=GvEg2SGQo6ooKLTUXbeV2WKIPrQMJOkY5CUG4dnH6UQ1yMiKU7cRJEKmyDa7nqmcyFAYuxMLG4EYACDbzu4pOA==;";
 
 		private readonly ContainerResponse _container;
 
@@ -17,7 +16,7 @@ namespace CosmosDb.Demo.Repo
 
 		private CosmosClient _client;
 
-		public UnitOfWork(ConsistencyLevel consistencyLevel, string? region = Regions.SouthCentralUS)
+		public UnitOfWork(ConsistencyLevel consistencyLevel, string connectionString, string? region)
 		{
 			var cosmosClientOptions = new CosmosClientOptions
 			{
@@ -26,7 +25,7 @@ namespace CosmosDb.Demo.Repo
 			};
 
 			// create a connection to azure cosmos db
-			_client = new CosmosClient(ConnectionString, cosmosClientOptions);
+			_client = new CosmosClient(connectionString, cosmosClientOptions);
 
 			// create a database
 			var database = _client.CreateDatabaseIfNotExistsAsync("WeatherForecast").Result;
@@ -41,9 +40,9 @@ namespace CosmosDb.Demo.Repo
 			GC.SuppressFinalize(this);
 		}
 
-		public IUnitOfWork GetUnitOfWork(ConsistencyLevel consistencyLevel, string region)
+		public IUnitOfWork<T> GetUnitOfWork(ConsistencyLevel consistencyLevel, string region, string connectionString)
 		{
-			return new UnitOfWork(consistencyLevel, region);
+			return new UnitOfWork<T>(consistencyLevel, connectionString, region);
 		}
 	}
 }
