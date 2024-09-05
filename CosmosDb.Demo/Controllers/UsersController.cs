@@ -9,11 +9,11 @@ namespace CosmosDb.Demo.Controllers
 	public class UsersController : ControllerBase
 	{
         private readonly ILogger<UsersController> _logger;
-        private readonly IGenericRepository<User> _userRepository;
+        private readonly UserRepository _userRepository;
 
         public UsersController(
 			ILogger<UsersController> logger,
-			IGenericRepository<User> userRepository
+			UserRepository userRepository
 			)
 		{
 			_logger = logger;
@@ -23,12 +23,13 @@ namespace CosmosDb.Demo.Controllers
 		// GET: api/Users
 		[HttpGet]
 		public async Task<IActionResult> Get(
+			[FromQuery] string? region,
 			[FromQuery] string? id = null,
 			[FromQuery] int page = 1,
 			[FromQuery] int pageSize = 10
 			)
 		{
-			var result = await _userRepository.Get(null, id, page, pageSize);
+			var result = await _userRepository.Get(region, id, page, pageSize);
 
 			return Ok(result);
 		}
@@ -53,9 +54,9 @@ namespace CosmosDb.Demo.Controllers
 
 		// DELETE: api/Users
 		[HttpDelete]
-		public async Task<IActionResult> Delete([FromQuery] string id)
+		public async Task<IActionResult> Delete([FromQuery] string region, [FromQuery] string id)
 		{
-			var result = await _userRepository.Delete(null, id);
+			var result = await _userRepository.Delete(region, id);
 
 			return Ok(result);
 		}

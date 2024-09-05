@@ -6,7 +6,7 @@ namespace CosmosDb.Demo.Repo
 	{
 		public ContainerResponse Context { get; }
 	}
-	
+
 	public class UnitOfWork<T> : IUnitOfWork<T>, IDisposable where T : BaseEntity
 	{
 
@@ -30,21 +30,16 @@ namespace CosmosDb.Demo.Repo
 			_client = new CosmosClient(connectionString, cosmosClientOptions);
 
 			// create a database
-			var database = _client.CreateDatabaseIfNotExistsAsync(TypeName).Result;
+			var database = _client.CreateDatabaseIfNotExistsAsync(nameof(BaseEntity)).Result;
 
 			// create a container
-			_container = database.Database.CreateContainerIfNotExistsAsync(TypeName, $"/{nameof(BaseEntity.Region)}").Result;
+			_container = database.Database.CreateContainerIfNotExistsAsync(TypeName, $"/{nameof(BaseEntity.Region)}", 500).Result;
 		}
 
 		public void Dispose()
 		{
 			_client.Dispose();
 			GC.SuppressFinalize(this);
-		}
-
-		public IUnitOfWork<T> GetUnitOfWork(ConsistencyLevel consistencyLevel, string region, string connectionString)
-		{
-			return new UnitOfWork<T>(consistencyLevel, connectionString, region);
 		}
 	}
 }

@@ -36,18 +36,18 @@ namespace CosmosDb.Demo.Repo
             return response;
         }
 
-        public async Task<WeatherForecast> Delete(string partitionKey, string id)
+        public async Task<T> Delete(string partitionKey, string id)
         {
             using var _unitOfWork = _unitOfWorkFactory.GetUnitOfWork<T>(_consistencyLevel, ConnectionString, partitionKey);
 
             // delete the item
             var partitionKey1 = new PartitionKey(partitionKey);
-            var response = await _unitOfWork.Context.Container.DeleteItemAsync<WeatherForecast>(id, partitionKey1);
+            var response = await _unitOfWork.Context.Container.DeleteItemAsync<T>(id, partitionKey1);
 
             return response.Resource;
         }
 
-        public async Task<List<WeatherForecast>> Get(string? partitionKey, string? id, int page, int pageSize)
+        public async Task<List<T>> Get(string? partitionKey, string? id, int page, int pageSize)
         {
             using var _unitOfWork = _unitOfWorkFactory.GetUnitOfWork<T>(_consistencyLevel, ConnectionString, partitionKey);
 
@@ -59,9 +59,9 @@ namespace CosmosDb.Demo.Repo
             var queryDefinition = AddParameters(partitionKey, id, query);
 
             // execute the query
-            var iterator = _unitOfWork.Context.Container.GetItemQueryIterator<WeatherForecast>(queryDefinition);
+            var iterator = _unitOfWork.Context.Container.GetItemQueryIterator<T>(queryDefinition);
 
-            var results = new List<WeatherForecast>();
+            var results = new List<T>();
 
             while (iterator.HasMoreResults)
             {
